@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🌈 Maths Adventure Classroom</title>
+<style>
+body{margin:0;font-family:Trebuchet MS,Arial;background:linear-gradient(135deg,#fff4fa,#eefaff);color:#334155}
+header{background:linear-gradient(135deg,#73c7ff,#a98cff);color:#fff;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+.logo{font-size:25px;font-weight:900}.logo small{display:block;font-size:12px}
+main{max-width:1200px;margin:auto;padding:25px 5%}.hero,.panel,.card{background:#fff;border-radius:24px;padding:22px;box-shadow:0 8px 25px #536b9918;margin-bottom:18px}
+.hero{display:flex;justify-content:space-between;align-items:center}.hero h1{font-size:35px;margin:0 0 8px}.mascot{font-size:65px;background:#fff1a8;border-radius:50%;width:105px;height:105px;display:grid;place-items:center}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}button,.btn{border:0;border-radius:13px;padding:10px 15px;font-weight:900;cursor:pointer;background:#a98cff;color:#fff}button.secondary{background:#fff;color:#6658c7}button.red{background:#ef7085}
+.view{display:none}.view.active{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}.stat{font-size:32px;font-weight:900}.muted{font-size:13px;color:#64748b}.tag{display:inline-block;padding:5px 9px;border-radius:18px;background:#f0edff;color:#6658c7;font-size:12px;font-weight:900}
+input,select,textarea{width:100%;padding:11px;margin-top:6px;border:2px solid #e0e8f2;border-radius:12px;font:inherit;box-sizing:border-box}.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:13px}
+table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid #edf1f6;text-align:left}th{background:#edf8ff}.progress{height:11px;background:#e7edf4;border-radius:20px;overflow:hidden}.progress div{height:100%;background:linear-gradient(90deg,#ff8fbd,#a98cff)}
+#login{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#ffe8f2,#e8f7ff)}.loginbox{width:min(450px,100%);background:#fff;border-radius:28px;padding:30px;box-shadow:0 15px 40px #536b9922}.hide{display:none!important}
+</style></head><body>
+<div id="login"><div class="loginbox"><h1>🌈 Maths Adventure</h1><p>Online classroom for primary maths.</p>
+<button id="teacherBtn" onclick="role='teacher';this.classList.add('active')">👩‍🏫 Teacher</button>
+<button onclick="role='pupil'">👩‍🎓 Pupil</button><br><br>
+<label>Email<input id="email" type="email"></label><br><label>Password<input id="password" type="password"></label><br>
+<button onclick="signin()">🔐 Sign in</button> <button class="secondary" onclick="signup()">Create account</button>
+<p id="msg" class="muted">Configure Firebase in firebase-config.js before deployment.</p></div></div>
+
+<div id="app" class="hide"><header><div class="logo">🌈 Maths Adventure Classroom<small id="userLabel"></small></div><button class="secondary" onclick="logout()">Log out</button></header>
+<main><div class="hero"><div><h1>Welcome to Maths Classroom! ✨</h1><p>Games • Results • Tests • Worksheets • Announcements</p></div><div class="mascot">🧮</div></div>
+<nav id="nav"><button onclick="show('dashboard',this)">🏠 Dashboard</button><button onclick="show('games',this)">🎮 Games</button><button id="pupilNav" onclick="show('pupils',this)">👩‍🎓 Pupils</button><button onclick="show('results',this)">📊 Results</button><button onclick="show('worksheets',this)">📚 Worksheets</button><button onclick="show('classroom',this)">💬 Classroom</button></nav>
+
+<section id="dashboard" class="view active"><div id="stats" class="grid"></div><div class="panel"><h2>📈 Pupil Progress</h2><div id="progress"></div></div></section>
+<section id="games" class="view"><div class="panel teacher"><h2>Add Educational Game</h2><div class="form"><label>Title<input id="gt"></label><label>Topic<input id="gtopic"></label><label>Platform<input id="gplatform" placeholder="Kahoot / Wordwall"></label><label>Link<input id="gurl"></label></div><br><button onclick="add('games',{title:gt.value,topic:gtopic.value,platform:gplatform.value,url:gurl.value})">➕ Add Game</button></div><div id="gamesList" class="grid"></div></section>
+<section id="pupils" class="view"><div class="panel teacher"><h2>Add Pupil</h2><div class="form"><label>Name<input id="pn"></label><label>Class<input id="pc"></label><label>Group<select id="pg"><option>Support</option><option>Core</option><option>Challenge</option></select></label></div><br><button onclick="add('pupils',{name:pn.value,className:pc.value,group:pg.value})">➕ Add Pupil</button></div><div id="pupilList"></div></section>
+<section id="results" class="view"><div class="panel teacher"><h2>Record Game / Test / Exam</h2><div class="form"><label>Pupil<select id="rp"></select></label><label>Activity<input id="rt"></label><label>Type<select id="rty"><option>Game</option><option>Quiz</option><option>Homework</option><option>Test</option><option>Exam</option></select></label><label>Score<input id="rs" type="number"></label><label>Maximum<input id="rm" type="number"></label></div><br><button onclick="saveResult()">💾 Save Result</button></div><div class="panel"><div id="resultList"></div></div></section>
+<section id="worksheets" class="view"><div class="panel teacher"><h2>Share Worksheet</h2><div class="form"><label>Title<input id="wt"></label><label>Topic<input id="wtopic"></label><label>Link<input id="wurl"></label></div><br><button onclick="add('worksheets',{title:wt.value,topic:wtopic.value,url:wurl.value})">📌 Share</button></div><div id="wsList" class="grid"></div></section>
+<section id="classroom" class="view"><div class="panel"><h2>💬 Classroom Announcements</h2><div class="teacher"><textarea id="ann"></textarea><br><button onclick="add('announcements',{text:ann.value,author:user.email})">📣 Post</button></div><div id="annList"></div></div></section>
+</main></div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import{getFirestore,collection,addDoc,deleteDoc,doc,onSnapshot,query,orderBy,serverTimestamp}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import{firebaseConfig}from"./firebase-config.js";
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);let user,role='teacher',data={pupils:[],games:[],results:[],worksheets:[],announcements:[]};
+const C=n=>collection(db,'classrooms','default',n);const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+window.signin=async()=>{try{await signInWithEmailAndPassword(auth,email.value,password.value)}catch(e){msg.textContent=e.message}};
+window.signup=async()=>{try{await createUserWithEmailAndPassword(auth,email.value,password.value)}catch(e){msg.textContent=e.message}};
+window.logout=()=>signOut(auth);
+onAuthStateChanged(auth,u=>{user=u;if(!u){login.classList.remove('hide');app.classList.add('hide');return}login.classList.add('hide');app.classList.remove('hide');userLabel.textContent=u.email;listen()});
+function listen(){Object.keys(data).forEach(n=>onSnapshot(query(C(n),orderBy('createdAt','desc')),s=>{data[n]=s.docs.map(d=>({id:d.id,...d.data()}));render()}))}
+window.add=async(n,o)=>{if(!Object.values(o).every(v=>String(v??'').trim()))return alert('Please complete the fields.');await addDoc(C(n),{...o,createdAt:serverTimestamp(),createdBy:user.uid})};
+window.saveResult=async()=>{let p=data.pupils.find(x=>x.id===rp.value),s=+rs.value,m=+rm.value;if(!p||!rt.value||!m||s<0||s>m)return alert('Check the result details.');await add('results',{pupilId:p.id,pupil:p.name,title:rt.value,type:rty.value,score:s,max:m,percent:Math.round(s/m*100)})};
+window.del=async(n,id)=>{if(confirm('Delete?'))await deleteDoc(doc(C(n),id))};
+window.show=(id,b)=>{document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active')};
+function render(){document.querySelectorAll('.teacher').forEach(x=>x.classList.toggle('hide',role!=='teacher'));pupilNav.classList.toggle('hide',role!=='teacher');
+let avg=data.results.length?Math.round(data.results.reduce((a,r)=>a+r.percent,0)/data.results.length):0;
+stats.innerHTML=[['👩‍🎓',data.pupils.length,'Pupils'],['🎮',data.games.length,'Games'],['📊',data.results.length,'Records'],['⭐',avg+'%','Average']].map(x=>`<div class="card"><div class="stat">${x[0]} ${x[1]}</div><div class="muted">${x[2]}</div></div>`).join('');
+rp.innerHTML=data.pupils.map(p=>`<option value="${p.id}">${esc(p.name)} — ${esc(p.className)}</option>`).join('');
+gamesList.innerHTML=data.games.map(g=>`<div class="card"><span class="tag">${esc(g.platform)}</span><h3>${esc(g.title)}</h3><p>${esc(g.topic)}</p><a class="btn" target="_blank" href="${esc(g.url)}">▶ Open Game</a> <button class="red teacher" onclick="del('games','${g.id}')">×</button></div>`).join('')||'<div class="card">No games yet.</div>';
+pupilList.innerHTML=data.pupils.map(p=>{let r=data.results.filter(x=>x.pupilId===p.id),a=r.length?Math.round(r.reduce((q,x)=>q+x.percent,0)/r.length):0;return`<div class="card"><b>${esc(p.name)}</b> <span class="tag">${esc(p.group)}</span><div class="muted">${esc(p.className)}</div><br><div class="progress"><div style="width:${a}%"></div></div><b>${a}%</b> average</div>`}).join('');
+resultList.innerHTML=`<table><tr><th>Pupil</th><th>Activity</th><th>Type</th><th>Mark</th><th>%</th><th></th></tr>${data.results.map(r=>`<tr><td>${esc(r.pupil)}</td><td>${esc(r.title)}</td><td>${esc(r.type)}</td><td>${r.score}/${r.max}</td><td>${r.percent}%</td><td><button class="red teacher" onclick="del('results','${r.id}')">×</button></td></tr>`).join('')}</table>`;
+wsList.innerHTML=data.worksheets.map(w=>`<div class="card"><span class="tag">${esc(w.topic)}</span><h3>${esc(w.title)}</h3><a class="btn" target="_blank" href="${esc(w.url)}">📖 Open Worksheet</a></div>`).join('')||'<div class="card">No worksheets yet.</div>';
+annList.innerHTML=data.announcements.map(a=>`<div class="card"><b>📣 ${esc(a.author||'Teacher')}</b><p>${esc(a.text)}</p></div>`).join('');
+progress.innerHTML=data.pupils.map(p=>{let r=data.results.filter(x=>x.pupilId===p.id),a=r.length?Math.round(r.reduce((q,x)=>q+x.percent,0)/r.length):0;return`<div class="card"><b>${esc(p.name)}</b> — ${esc(p.className)}<h3>${a}%</h3><div class="progress"><div style="width:${a}%"></div></div></div>`}).join('')||'<p class="muted">Add pupils and results to see progress.</p>'}
+</script></body></html>
