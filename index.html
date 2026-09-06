@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maths Adventure Hub</title>
+<style>
+:root{
+  --pink:#ff8fbd; --blue:#73c7ff; --yellow:#ffd95a; --mint:#78dfc0;
+  --purple:#a98cff; --ink:#334155; --cream:#fffaf2; --white:#fff;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",Arial,sans-serif;background:linear-gradient(135deg,#fff5fb,#effaff);color:var(--ink)}
+header{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;padding:22px 5%;display:flex;align-items:center;justify-content:space-between;gap:20px;position:sticky;top:0;z-index:10;box-shadow:0 5px 20px #5273a333}
+.logo{font-size:28px;font-weight:900}.logo span{font-size:14px;display:block;font-weight:600}
+nav{display:flex;gap:8px;flex-wrap:wrap}nav button{border:0;background:#ffffff33;color:#fff;padding:10px 14px;border-radius:20px;font-weight:800;cursor:pointer}
+nav button.active,nav button:hover{background:#fff;color:#6354b7}
+main{max-width:1250px;margin:auto;padding:28px 5% 60px}.hero{background:#fff;border-radius:28px;padding:28px;box-shadow:0 10px 30px #5c739b18;display:flex;justify-content:space-between;align-items:center;gap:25px;margin-bottom:25px}
+.hero h1{margin:0 0 8px;font-size:38px}.hero p{margin:0;line-height:1.6}.mascot{font-size:72px;background:#fff4a8;border-radius:50%;width:120px;height:120px;display:grid;place-items:center}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}.card{background:#fff;border-radius:22px;padding:20px;box-shadow:0 7px 22px #5c739b14;border:3px solid transparent}.card.pink{border-color:#ffc4df}.card.blue{border-color:#b9e4ff}.card.yellow{border-color:#ffe79a}.card.mint{border-color:#b5f1df}
+.stat{font-size:34px;font-weight:900}.label{font-weight:700;color:#64748b}
+section{display:none}section.active{display:block}.section-title{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:28px 0 15px}h2{margin:0;font-size:27px}
+.btn{border:0;border-radius:14px;padding:11px 16px;font-weight:900;cursor:pointer;background:var(--purple);color:#fff}.btn.secondary{background:var(--blue)}.btn.green{background:#36b98f}.btn.yellow{background:#f0b900;color:#fff}.btn.danger{background:#ef6d82}
+input,select{width:100%;padding:12px;border:2px solid #dce6f2;border-radius:12px;font:inherit;margin-top:7px}.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}
+.game-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}.game{position:relative;overflow:hidden}.game .emoji{font-size:48px}.tag{display:inline-block;background:#f0edff;color:#6955c5;border-radius:20px;padding:5px 10px;font-size:12px;font-weight:900;margin:5px 0}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 5px 20px #5c739b12}th,td{padding:12px;text-align:left;border-bottom:1px solid #edf1f6}th{background:#eaf7ff}
+.progress{height:12px;background:#e8edf5;border-radius:20px;overflow:hidden}.progress>div{height:100%;background:linear-gradient(90deg,var(--pink),var(--purple));border-radius:20px}
+.notice{padding:14px;border-radius:15px;background:#fff7d1;margin:12px 0}.empty{text-align:center;padding:35px;color:#64748b}
+.quiz{background:#fff;border-radius:24px;padding:25px;box-shadow:0 8px 25px #5c739b18;max-width:760px;margin:auto}.question{font-size:24px;font-weight:900}.options{display:grid;gap:10px;margin-top:18px}.options button{padding:14px;border:2px solid #dce6f2;background:#fff;border-radius:14px;text-align:left;font-size:17px;cursor:pointer}.options button:hover{border-color:var(--purple);background:#f7f5ff}
+.filebox{border:3px dashed #b9dff6;border-radius:20px;padding:25px;text-align:center;background:#f8fdff}
+.small{font-size:13px;color:#64748b}.link{color:#6658c7;font-weight:900}
+footer{text-align:center;padding:25px;color:#64748b;font-size:13px}
+@media(max-width:700px){header{align-items:flex-start;flex-direction:column}.hero h1{font-size:29px}.mascot{width:90px;height:90px;font-size:52px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🌈 Maths Adventure Hub<span>Interactive classroom dashboard for primary maths</span></div>
+  <nav>
+    <button class="active" onclick="showTab('home',this)">🏠 Home</button>
+    <button onclick="showTab('games',this)">🎮 Games</button>
+    <button onclick="showTab('pupils',this)">👩‍🎓 Pupils</button>
+    <button onclick="showTab('tests',this)">📊 Tests</button>
+    <button onclick="showTab('worksheets',this)">📚 Worksheets</button>
+  </nav>
+</header>
+
+<main>
+<section id="home" class="active">
+  <div class="hero">
+    <div><h1>Welcome, Maths Teacher! ✨</h1><p>Create a cheerful maths space where pupils can practise, play, submit scores and see their progress.</p></div>
+    <div class="mascot">🧮</div>
+  </div>
+  <div class="cards">
+    <div class="card pink"><div class="stat" id="pupilCount">0</div><div class="label">Pupils registered</div></div>
+    <div class="card blue"><div class="stat" id="gameCount">0</div><div class="label">Game results</div></div>
+    <div class="card yellow"><div class="stat" id="avgScore">0%</div><div class="label">Average game score</div></div>
+    <div class="card mint"><div class="stat" id="testCount">0</div><div class="label">Test records</div></div>
+  </div>
+  <div class="section-title"><h2>🚀 Quick Start</h2></div>
+  <div class="cards">
+    <div class="card"><h3>1. Add your pupils</h3><p>Register names and classes in the Pupils tab.</p><button class="btn" onclick="showTab('pupils')">Add Pupils</button></div>
+    <div class="card"><h3>2. Add game links</h3><p>Paste links to Kahoot, Quizizz, Wordwall, Blooket or your own games.</p><button class="btn secondary" onclick="showTab('games')">Manage Games</button></div>
+    <div class="card"><h3>3. Record performance</h3><p>Enter scores from games and tests. The dashboard calculates progress automatically.</p><button class="btn green" onclick="showTab('tests')">Open Dashboard</button></div>
+  </div>
+  <div class="notice">💡 <b>Teacher tip:</b> This version stores classroom data in this browser using local storage. Use “Export CSV” regularly to keep a backup or move results into Excel/Google Sheets.</div>
+</section>
+
+<section id="games">
+  <div class="section-title"><h2>🎮 Educational Games</h2></div>
+  <div class="card">
+    <h3>Add an interactive game</h3>
+    <div class="formgrid">
+      <label>Game title<input id="gameTitle" placeholder="e.g. Multiplication Adventure"></label>
+      <label>Topic<input id="gameTopic" placeholder="e.g. Multiplication"></label>
+      <label>Platform<input id="gamePlatform" placeholder="e.g. Kahoot / Wordwall"></label>
+      <label>Game link<input id="gameUrl" placeholder="https://..."></label>
+    </div><br><button class="btn" onclick="addGame()">➕ Add Game</button>
+  </div>
+  <div class="section-title"><h2>My Game Library</h2></div>
+  <div id="gameGrid" class="game-grid"></div>
+  <div class="section-title"><h2>🕹️ Built-in Mini Game</h2></div>
+  <div class="quiz" id="quizBox"></div>
+</section>
+
+<section id="pupils">
+  <div class="section-title"><h2>👩‍🎓 Pupil Manager</h2></div>
+  <div class="card">
+    <div class="formgrid">
+      <label>Pupil name<input id="pupilName" placeholder="Full name"></label>
+      <label>Class<input id="pupilClass" placeholder="e.g. 5A"></label>
+      <label>Ability group<select id="pupilGroup"><option>Support</option><option>Core</option><option>Challenge</option></select></label>
+    </div><br><button class="btn" onclick="addPupil()">➕ Add Pupil</button>
+  </div>
+  <br><div id="pupilTable"></div>
+</section>
+
+<section id="tests">
+  <div class="section-title"><h2>📊 Performance Dashboard</h2><button class="btn secondary" onclick="exportCSV()">⬇️ Export CSV</button></div>
+  <div class="card">
+    <h3>Record a game or test result</h3>
+    <div class="formgrid">
+      <label>Pupil<select id="resultPupil"></select></label>
+      <label>Activity title<input id="resultTitle" placeholder="e.g. Fractions Test"></label>
+      <label>Type<select id="resultType"><option>Game</option><option>Homework</option><option>Quiz</option><option>Test</option><option>Exam</option></select></label>
+      <label>Score<input id="resultScore" type="number" min="0" placeholder="e.g. 18"></label>
+      <label>Maximum mark<input id="resultMax" type="number" min="1" placeholder="e.g. 20"></label>
+    </div><br><button class="btn green" onclick="addResult()">💾 Save Result</button>
+  </div>
+  <div class="section-title"><h2>Class Overview</h2></div>
+  <div id="classOverview"></div>
+  <div class="section-title"><h2>Individual Performance</h2></div>
+  <div id="resultTable"></div>
+</section>
+
+<section id="worksheets">
+  <div class="section-title"><h2>📚 Worksheet Sharing Centre</h2></div>
+  <div class="card">
+    <p>Keep links to worksheets, Google Drive folders, PDFs or other resources. For a true online class, upload the files to Google Drive/OneDrive first and paste the share link here.</p>
+    <div class="formgrid">
+      <label>Worksheet title<input id="wsTitle" placeholder="e.g. Week 9 Word Problems"></label>
+      <label>Topic<input id="wsTopic" placeholder="e.g. Four Operations"></label>
+      <label>Share link<input id="wsUrl" placeholder="https://drive.google.com/..."></label>
+    </div><br><button class="btn yellow" onclick="addWorksheet()">📌 Share Worksheet</button>
+  </div>
+  <div class="section-title"><h2>Shared Resources</h2></div>
+  <div id="worksheetGrid" class="game-grid"></div>
+</section>
+</main>
+<footer>🌟 Maths Adventure Hub • Cheerful learning for primary pupils • Teacher Dashboard</footer>
+
+<script>
+const KEY='mathsHubV1';
+let data=JSON.parse(localStorage.getItem(KEY)||'{"pupils":[],"games":[],"results":[],"worksheets":[]}');
+function save(){localStorage.setItem(KEY,JSON.stringify(data));refresh();}
+function showTab(id,btn){
+ document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+ if(btn)btn.classList.add('active');
+ refresh();
+}
+function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function addPupil(){
+ let name=pupilName.value.trim(), cls=pupilClass.value.trim(), group=pupilGroup.value;
+ if(!name||!cls)return alert('Please enter the pupil name and class.');
+ data.pupils.push({id:Date.now(),name,cls,group});pupilName.value='';save();
+}
+function addGame(){
+ let title=gameTitle.value.trim(),topic=gameTopic.value.trim(),platform=gamePlatform.value.trim(),url=gameUrl.value.trim();
+ if(!title||!url)return alert('Please enter a game title and link.');
+ if(!/^https?:\/\//i.test(url))url='https://'+url;
+ data.games.push({id:Date.now(),title,topic,platform,url});gameTitle.value='';gameTopic.value='';gamePlatform.value='';gameUrl.value='';save();
+}
+function addWorksheet(){
+ let title=wsTitle.value.trim(),topic=wsTopic.value.trim(),url=wsUrl.value.trim();
+ if(!title||!url)return alert('Please enter a worksheet title and link.');
+ if(!/^https?:\/\//i.test(url))url='https://'+url;
+ data.worksheets.push({id:Date.now(),title,topic,url});wsTitle.value='';wsTopic.value='';wsUrl.value='';save();
+}
+function addResult(){
+ let pupil=Number(resultPupil.value),title=resultTitle.value.trim(),type=resultType.value,score=Number(resultScore.value),max=Number(resultMax.value);
+ if(!pupil||!title||!max||score<0||score>max)return alert('Please complete the result details. Score cannot be greater than the maximum mark.');
+ let p=data.pupils.find(x=>x.id===pupil);
+ data.results.push({id:Date.now(),pupilId:pupil,pupil:p.name,title,type,score,max,date:new Date().toLocaleDateString()});resultTitle.value='';resultScore.value='';resultMax.value='';save();
+}
+function remove(type,id){if(confirm('Remove this item?')){data[type]=data[type].filter(x=>x.id!==id);save()}}
+function refresh(){
+ pupilCount.textContent=data.pupils.length;gameCount.textContent=data.results.filter(r=>r.type==='Game').length;
+ let avg=data.results.length?data.results.reduce((a,r)=>a+r.score/r.max,0)/data.results.length*100:0;
+ avgScore.textContent=Math.round(avg)+'%';testCount.textContent=data.results.filter(r=>['Test','Exam'].includes(r.type)).length;
+ resultPupil.innerHTML=data.pupils.length?data.pupils.map(p=>`<option value="${p.id}">${esc(p.name)} — ${esc(p.cls)}</option>`).join(''):'<option value="">No pupils yet</option>';
+ pupilTable.innerHTML=data.pupils.length?`<table><tr><th>Name</th><th>Class</th><th>Group</th><th>Results</th><th></th></tr>${data.pupils.map(p=>{let rs=data.results.filter(r=>r.pupilId===p.id);let av=rs.length?Math.round(rs.reduce((a,r)=>a+r.score/r.max,0)/rs.length*100):0;return `<tr><td>${esc(p.name)}</td><td>${esc(p.cls)}</td><td>${esc(p.group)}</td><td>${rs.length} • ${av}% avg.</td><td><button class="btn danger" onclick="remove('pupils',${p.id})">Delete</button></td></tr>`}).join('')}</table>`:'<div class="empty">No pupils added yet.</div>';
+ gameGrid.innerHTML=data.games.length?data.games.map(g=>`<div class="card game pink"><div class="emoji">🎯</div><span class="tag">${esc(g.platform)}</span><h3>${esc(g.title)}</h3><p>${esc(g.topic)}</p><a class="btn secondary" href="${esc(g.url)}" target="_blank" rel="noopener">▶ Open Game</a> <button class="btn danger" onclick="remove('games',${g.id})">×</button></div>`).join(''):'<div class="empty">Add your Kahoot, Quizizz, Wordwall, Blooket or other game links above.</div>';
+ worksheetGrid.innerHTML=data.worksheets.length?data.worksheets.map(w=>`<div class="card game mint"><div class="emoji">📖</div><span class="tag">${esc(w.topic)}</span><h3>${esc(w.title)}</h3><a class="btn green" href="${esc(w.url)}" target="_blank" rel="noopener">📎 Open Worksheet</a> <button class="btn danger" onclick="remove('worksheets',${w.id})">×</button></div>`).join(''):'<div class="empty">No worksheets shared yet.</div>';
+ let rows=data.results.slice().reverse();
+ resultTable.innerHTML=rows.length?`<table><tr><th>Pupil</th><th>Activity</th><th>Type</th><th>Mark</th><th>%</th><th>Date</th><th></th></tr>${rows.map(r=>`<tr><td>${esc(r.pupil)}</td><td>${esc(r.title)}</td><td>${esc(r.type)}</td><td>${r.score}/${r.max}</td><td>${Math.round(r.score/r.max*100)}%</td><td>${r.date}</td><td><button class="btn danger" onclick="remove('results',${r.id})">×</button></td></tr>`).join('')}</table>`:'<div class="empty">No performance records yet.</div>';
+ classOverview.innerHTML=data.pupils.length?`<div class="cards">${data.pupils.map(p=>{let rs=data.results.filter(r=>r.pupilId===p.id),pct=rs.length?Math.round(rs.reduce((a,r)=>a+r.score/r.max,0)/rs.length*100):0;return `<div class="card"><b>${esc(p.name)}</b><div class="small">${esc(p.cls)} • ${esc(p.group)}</div><h3>${pct}%</h3><div class="progress"><div style="width:${pct}%"></div></div><div class="small">${rs.length} activities recorded</div></div>`}).join('')}</div>`:'<div class="empty">Add pupils to see the performance dashboard.</div>';
+ initQuiz();
+}
+let qIndex=0,qScore=0,quiz=[
+ ['What is 7 × 8?',['54','56','64','48'],'56'],
+ ['What is 450 ÷ 9?',['40','45','50','55'],'50'],
+ ['What is 3,000 − 875?',['2,025','2,125','2,225','2,325'],'2,125'],
+ ['What is 125 + 375?',['400','450','500','550'],'500'],
+ ['What is 6 × 25?',['125','150','175','200'],'150']
+];
+function initQuiz(){
+ let q=quiz[qIndex%quiz.length];
+ quizBox.innerHTML=`<span class="tag">Question ${qIndex%quiz.length+1} of ${quiz.length}</span><div class="question">${q[0]}</div><div class="options">${q[1].map(o=>`<button onclick="answerQuiz('${o.replace(/'/g,"\\'")}','${q[2]}')">${o}</button>`).join('')}</div><p id="quizMsg"></p>`;
+}
+function answerQuiz(choice,correct){
+ let msg=document.getElementById('quizMsg');
+ if(choice===correct){qScore++;msg.innerHTML='🎉 Correct! Great maths thinking!';}else msg.innerHTML=`💡 Not quite. The correct answer is <b>${correct}</b>.`;
+ setTimeout(()=>{qIndex++;if(qIndex>=quiz.length){alert('Mini Game complete! Score: '+qScore+'/'+quiz.length);qIndex=0;qScore=0}initQuiz()},700);
+}
+function exportCSV(){
+ let lines=[['Pupil','Class','Group','Activity','Type','Score','Maximum','Percentage','Date']];
+ data.results.forEach(r=>{let p=data.pupils.find(x=>x.id===r.pupilId)||{};lines.push([r.pupil,p.cls||'',p.group||'',r.title,r.type,r.score,r.max,Math.round(r.score/r.max*100)+'%',r.date])});
+ let csv=lines.map(row=>row.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')).join('\n');
+ let blob=new Blob([csv],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='maths_performance.csv';a.click();URL.revokeObjectURL(a.href);
+}
+refresh();
+</script>
+</body>
+</html>
